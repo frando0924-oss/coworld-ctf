@@ -181,7 +181,10 @@ const
                               # cone forgives 10px of miss and the body another
                               # 17, so a point-blank spray is far harder to
                               # whiff than the 14-degree figure suggests.
-  PlasmaDetour = 70.0         # attacker detour budget for a spray can pickup
+  # The pocketGun A/B variant keeps the attack wave on its normal gun route;
+  # plasma disables that gun and was the least reliable choice in the losing
+  # PocketFight replay when the rusher reached the enemy pocket late.
+  PlasmaDetour = when defined(pocketGun): 0.0 else: 70.0
   ShieldStealDetour = 480.0   # MidGuard's shield trip: the enemy endzone
                               # shield sits low in their back column
                               # (~215px from the pedestal since the game-v7

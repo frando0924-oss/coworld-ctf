@@ -1,0 +1,28 @@
+name: Paintbot pocket-gun artifact
+
+on:
+  push:
+    branches: [paintbot-ci-artifact]
+    paths:
+      - 'players/baseline/**'
+      - 'Dockerfile'
+      - '.github/workflows/paintbot-pocketgun-artifact.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 --build-arg NIM_DEFINES="-d:pocketFight -d:pocketGun" -t paintbot-pocketgun:ci .
+      - name: Save image archive
+        run: docker save paintbot-pocketgun:ci -o paintbot-pocketgun.tar
+      - name: Upload image archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: paintbot-pocketgun-docker-archive
+          path: paintbot-pocketgun.tar
+          if-no-files-found: error
