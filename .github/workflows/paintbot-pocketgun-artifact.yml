@@ -5,7 +5,7 @@ on:
     branches: [paintbot-ci-artifact]
     paths:
       - 'players/baseline/**'
-      - 'Dockerfile'
+      - 'players/baseline/Dockerfile'
       - '.github/workflows/paintbot-pocketgun-artifact.yml'
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
-        run: docker build --platform linux/amd64 --build-arg NIM_DEFINES="-d:pocketFight -d:pocketGun" -t paintbot-pocketgun:ci .
+        run: docker build --platform linux/amd64 --build-arg NIM_DEFINES="-d:pocketFight -d:pocketGun" -f players/baseline/Dockerfile -t paintbot-pocketgun:ci .
       - name: Save image archive
         run: docker save paintbot-pocketgun:ci -o paintbot-pocketgun.tar
       - name: Upload image archive
