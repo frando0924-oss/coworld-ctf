@@ -1,0 +1,36 @@
+name: Build Paintbot policy artifact
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "players/baseline/**"
+      - "src/**"
+      - "ctf.nimble"
+      - "nimby.lock"
+      - "players/baseline/Dockerfile"
+      - ".github/workflows/paintbot-build-artifact.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build Linux/amd64 policy image
+        run: docker build --platform linux/amd64 -f players/baseline/Dockerfile -t paintbot-baseline:ci .
+
+      - name: Export OCI-compatible Docker archive
+        run: docker save paintbot-baseline:ci -o paintbot-baseline.tar
+
+      - name: Upload policy archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: paintbot-baseline-docker-archive
+          path: paintbot-baseline.tar
+          if-no-files-found: error
+          retention-days: 7
