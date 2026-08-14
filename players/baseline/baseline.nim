@@ -2444,7 +2444,11 @@ proc decide(bot: Bot, client: ProtocolClient): uint8 {.measure.} =
     elif hasShield and not hasPlasma:    # slow gun (3x cooldown): only fight
       CarrierFireRange                   # what is point-blank in the way
     elif hasPlasma: PlasmaReach + 6.0    # cone weapon: only close range matters
-    elif pocketRush: 0.0
+    elif pocketRush:
+      # The baseline commits to the touch unarmed.  The pocketFight variant
+      # keeps a short close-range envelope so a defender in the pedestal
+      # pocket can be cleared instead of stalling the rush indefinitely.
+      when defined(pocketFight): 170.0 else: 0.0
     elif iCarry: CarrierFireRange
     elif ownStolen and bot.tick - bot.carrierSeen <= thiefChaseTtl: FireRange
       # A live fix on the enemy running our flag lifts every role's range
